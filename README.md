@@ -1,1 +1,7 @@
-# event_ingestion_microservice
+# Event Ingestion Microservice
+
+## Dependencies
+* flask
+* pika
+* dotenv
+* psycopg2
