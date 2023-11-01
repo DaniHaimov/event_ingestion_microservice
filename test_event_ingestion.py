@@ -31,16 +31,16 @@ class EventIngestionTestCase(unittest.TestCase):
         #  )
 
         # Mock message broker setup
-        # service._channel = MockMsgBroker()
+        service._channel = MockMsgBroker()
 
-        msg_broker_host = os.getenv("MESSAGE_BROKER_PRODUCER_HOST")
-        msg_broker_port = int(os.getenv("MESSAGE_BROKER_PRODUCER_PORT"))
-        msg_broker_name = os.getenv("MESSAGE_BROKER_PRODUCER_NAME")
-
-        rabbit_connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=msg_broker_host, port=msg_broker_port))
-        service._channel = rabbit_connection.channel()
-        service._channel.queue_declare(queue=msg_broker_name)
+        # msg_broker_host = os.getenv("MESSAGE_BROKER_PRODUCER_HOST")
+        # msg_broker_port = int(os.getenv("MESSAGE_BROKER_PRODUCER_PORT"))
+        # msg_broker_name = os.getenv("MESSAGE_BROKER_PRODUCER_NAME")
+        #
+        # rabbit_connection = pika.BlockingConnection(
+        #     pika.ConnectionParameters(host=msg_broker_host, port=msg_broker_port))
+        # service._channel = rabbit_connection.channel()
+        # service._channel.queue_declare(queue=msg_broker_name)
 
     def test_create_event(self):
         response = self.client.post('/api/events', json={
