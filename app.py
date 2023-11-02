@@ -55,16 +55,16 @@ def delete_event(event_id):
     return jsonify({"status": "Event deleted", "event_id": event_id}), 202
 
 
-# Add Roles
-@app.route('/admin/roles', methods=['POST'])
-def create_role(event_id):
-    role = request.json
-    # Send role to RabbitMQ
+# Add Rules
+@app.route('/admin/rules', methods=['POST'])
+def create_rule(event_id):
+    rule = request.json
+    # Send rule to RabbitMQ
     _channel.basic_publish(exchange='',
                            routing_key=__msg_broker_name,
-                           body=json.dumps(role))
+                           body=json.dumps(rule))
 
-    return jsonify({"status": "Role created"}), 201
+    return jsonify({"status": "Rule created"}), 201
 
 
 if __name__ == '__main__':

@@ -77,7 +77,7 @@ class EventsDbCRUD(EventsDbCRUDInterface):
             port=port
         )
         self.cur = self.conn.cursor()
-        self.table_name = 'events3'
+        self.table_name = 'events'
         self.create_table_if_not_exists()
 
     def create_table_if_not_exists(self):
