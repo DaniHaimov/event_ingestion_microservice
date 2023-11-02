@@ -13,8 +13,8 @@ and includes CRUD operations interacting with a PostgreSQL database.
 Before installation, ensure that Docker and Python are installed on your system.
 1. Clone the repository or download the application files.
 2. [Install](https://github.com/DaniHaimov/alerts_notifications_microservice) `alerts_notifications_microservice`
-3. [Deploy PostgreSQL](README.md#deploy-postgresql)
-4. [Deploy RabbitMQ](README.md#deploy-rabbitmq) (Should be deployed by the `alerts_notifications_microservice`)
+3. [Deploy PostgreSQL](#deploy-postgresql)
+4. [Deploy RabbitMQ](#deploy-rabbitmq) (Should be deployed by the `alerts_notifications_microservice`)
 
 
 ## Configuration
