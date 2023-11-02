@@ -89,12 +89,12 @@ class EventIngestionTestCase(unittest.TestCase):
         # print(event_id)
         # Test deleting the event
         delete_response = self.client.delete(f'/api/events/{event_id}')
-        self.assertEqual(delete_response.status_code, 200)
+        self.assertEqual(delete_response.status_code, 202)
         self.assertIn('Event deleted', delete_response.json['status'])
 
         # Verify the deletion
-        # get_response = self.client.get(f'/api/events/{event_id}')
-        # self.assertEqual(get_response.status_code, 404)
+        get_response = self.client.get(f'/api/events/{event_id}')
+        self.assertEqual(get_response.status_code, 404)
 
 
 if __name__ == '__main__':

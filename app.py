@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import json
 import pika
+from waitress import serve
 
 from events_crud import EventsDbCRUD, EventsDbCRUDInterface, EventsMockDbCRUD
 import os
@@ -51,16 +52,19 @@ def delete_event(event_id):
     record = _db_crud.delete(event_id)
     if record is None:
         return jsonify({"status": "Event not found"}), 404
-    return jsonify({"status": "Event deleted", "event_id": event_id}), 200
+    return jsonify({"status": "Event deleted", "event_id": event_id}), 202
 
 
 # Add Roles
 @app.route('/admin/roles', methods=['POST'])
 def create_role(event_id):
-    record = _db_crud.delete(event_id)
-    if record is None:
-        return jsonify({"status": "Event not found"}), 404
-    return jsonify({"status": "Event deleted", "event_id": event_id}), 200
+    role = request.json
+    # Send role to RabbitMQ
+    _channel.basic_publish(exchange='',
+                           routing_key=__msg_broker_name,
+                           body=json.dumps(role))
+
+    return jsonify({"status": "Role created"}), 201
 
 
 if __name__ == '__main__':
@@ -74,16 +78,20 @@ if __name__ == '__main__':
     )
 
     # Mock database setup
-    _db_crud = EventsMockDbCRUD()
+    # _db_crud = EventsMockDbCRUD()
 
     # Set up Message Broker connection
     msg_broker_host = os.getenv("MESSAGE_BROKER_PRODUCER_HOST")
     msg_broker_port = int(os.getenv("MESSAGE_BROKER_PRODUCER_PORT"))
     msg_broker_name = os.getenv("MESSAGE_BROKER_PRODUCER_NAME")
 
-    # params = pika.URLParameters(msg_broker_host)
-    rabbit_connection = pika.BlockingConnection(pika.ConnectionParameters(host=msg_broker_host, port=msg_broker_port))
+    amqp_url = f'amqp://guest:guest@{msg_broker_host}:{msg_broker_port}/%2F'
+
+    params = pika.URLParameters(amqp_url)
+
+    # rabbit_connection = AsyncioConnection(params)
+    rabbit_connection = pika.BlockingConnection(params)
     _channel = rabbit_connection.channel()
     _channel.queue_declare(queue=msg_broker_name)
 
-    app.run(debug=False)
+    serve(app, host="0.0.0.0", port=os.getenv("PORT"))
