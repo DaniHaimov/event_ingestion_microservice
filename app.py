@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import json
 import pika
 
-from events_crud import EventsDbCRUD, EventsDbCRUDInterface
+from events_crud import EventsDbCRUD, EventsDbCRUDInterface, EventsMockDbCRUD
 import os
 from dotenv import load_dotenv
 
@@ -73,11 +73,15 @@ if __name__ == '__main__':
         port=os.getenv('DB_PORT'),
     )
 
+    # Mock database setup
+    _db_crud = EventsMockDbCRUD()
+
     # Set up Message Broker connection
     msg_broker_host = os.getenv("MESSAGE_BROKER_PRODUCER_HOST")
     msg_broker_port = int(os.getenv("MESSAGE_BROKER_PRODUCER_PORT"))
     msg_broker_name = os.getenv("MESSAGE_BROKER_PRODUCER_NAME")
 
+    # params = pika.URLParameters(msg_broker_host)
     rabbit_connection = pika.BlockingConnection(pika.ConnectionParameters(host=msg_broker_host, port=msg_broker_port))
     _channel = rabbit_connection.channel()
     _channel.queue_declare(queue=msg_broker_name)
