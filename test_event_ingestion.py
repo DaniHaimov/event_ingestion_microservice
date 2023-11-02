@@ -3,7 +3,7 @@ import unittest
 
 import pika
 
-import event_ingestion as service
+import app as service
 from events_crud import EventsMockDbCRUD, EventsDbCRUD
 
 
