@@ -44,11 +44,108 @@ docker compose up
 
 ## Endpoints
 The application provides endpoints for event management with JSON responses:
-* `POST` /api/events: Create a new event.
-* `GET` /api/events/<event_id>: Retrieve an event by ID.
-* `PUT` /api/events/<event_id>: Update an existing event by ID.
-* `DELETE` /api/events/<event_id>: Delete an event by ID.
-* `POST` /admin/rules: Create a new rule.
+* `POST` /api/events: Create a new event.</br>
+This endpoint is used to create a new event. 
+The request must include the event details in JSON format. 
+Upon successful creation, the event is also sent to RabbitMQ for handling.
+    #### Request:
+    ```json
+    POST /api/events
+    Content-Type: application/json
+    {
+      "event": "event content",
+      "created_by": "Joe"
+    }
+  ```
+  #### Successful Response:
+    ```json
+    HTTP/1.1 201 Created
+    Content-Type: application/json
+    {
+      "event_id": "123e4567-e89b-12d3-a456-426655440000"
+      "status": "Event created",
+    }
+  ```
+* `GET` /api/events/<event_id>: Retrieve an event by ID.</br>
+This endpoint retrieves the details of a specific event by its unique identifier.
+    #### Request:
+    ```json
+    GET /api/events/123e4567-e89b-12d3-a456-426655440000
+  ```
+  #### Successful Response:
+    ```json
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    {
+      "event_id": "123e4567-e89b-12d3-a456-426655440000",
+      "event": "event content",
+      "created_by": "Joe",
+      "created_at": "2023-11-02T14:25:00Z"
+    }
+  ```
+  #### Failed Response:
+    ```json
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+    {
+        "status": "Event not found"
+    }
+  ```
+* `PUT` /api/events/<event_id>: Update an existing event by ID.</br>
+This endpoint updates an existing event identified by its ID with new information provided in the request body.
+    #### Request:
+    ```json
+    PUT /api/events/123e4567-e89b-12d3-a456-426655440000
+    Content-Type: application/json
+    {
+      "event": "event content Updated"
+    }
+  ```
+  #### Successful Response:
+    ```json
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    {
+        "status": "Event updated",
+        "event_id": "123e4567-e89b-12d3-a456-426655440000"
+    }
+  ```
+  #### Failed Response:
+    ```json
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+    {
+        "status": "Event not found"
+    }
+  ```
+* `DELETE` /api/events/<event_id>: Delete an event by ID.</br>
+This endpoint deletes an event based on its ID.
+    #### Request:
+    ```json
+    DELETE /api/events/123e4567-e89b-12d3-a456-426655440000
+  ```
+  #### Successful Response:
+    ```json
+    HTTP/1.1 202 Accepted
+    Content-Type: application/json
+    {
+        "status": "Event deleted",
+        "event_id": "123e4567-e89b-12d3-a456-426655440000"
+    }
+  ```
+  #### Failed Response:
+    ```json
+    HTTP/1.1 404 Not Found
+    Content-Type: application/json
+    {
+        "status": "Event not found"
+    }
+  ```
+* `POST` /admin/rules: Create a new rule.</br>
+This endpoint add a rule to `alerts_notifications_microservice`
+    ```json
+      Coming soon
+    ```
 
 ## Dependencies
 This application requires the following Python packages:
@@ -86,7 +183,12 @@ NOTICE: don't forget create database
 ## Deploy RabbitMQ
 ### Local Install
 ```bash
-
+  // Refresh the apt-get repository
+  sudo apt-get update
+  // Install RabbitMQ
+  sudo apt-get install rabbitmq-server
+  // Start the RabbitMQ
+  sudo systemctl start rabbitmq-server
 ```
   
 ### Container Deploy
